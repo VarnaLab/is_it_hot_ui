@@ -8,5 +8,6 @@
     , "cradle": "latest"
     , "date-utils": "latest"
     , "socket.io": "latest"
+    , "forever": "latest"
   }
 }
