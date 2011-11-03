@@ -1,0 +1,12 @@
+{
+    "name": "is_it_hot_ui"
+  , "version": "0.0.1"
+  , "private": true
+  , "dependencies": {
+      "express": "2.5.0"
+    , "jade": ">= 0.0.1"
+    , "cradle": "latest"
+    , "date-utils": "latest"
+    , "socket.io": "latest"
+  }
+}
