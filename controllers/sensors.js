@@ -21,7 +21,7 @@ exports.index = function (req, res) {
   var minutes_str = d.getFullYear()+"_"+(d.getMonth()+1)+"_"+today_date+"@"+d.getHours()+":"+d.getMinutes();
 
   req.db.view('sensors/sensors_last_minute',{descending: true}, function (err, docs) {	
-      res.render('sensors', { sensors: docs, title: "Sensors" });
+      res.render('sensors', { sensors: docs, title: "All sensors" });
   });
 };
 
@@ -34,7 +34,7 @@ exports.room1 = function (req, res) {
   var minutes_str = d.getFullYear()+"_"+(d.getMonth()+1)+"_"+today_date+"@"+d.getHours();
 
   req.db.view('sensors/sensor_room1',{descending: true}, function (err, docs) {	
-      res.render('sensors', { sensors: docs, title: "Sensors" });
+      res.render('sensor', { sensors: docs, title: "Sensor" });
   });
 };
 
