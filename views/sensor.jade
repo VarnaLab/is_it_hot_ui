@@ -1,9 +1,19 @@
 a(href='http://localhost:3050/sensors/') All sensors
-if (sensors[0])
-  h2 address : #{sensors[0].value.address}
-  h2 name : #{sensors[0].value.name}
-else
-  h2 Empty  
-ul#sensors
-  each sensor in sensors
-    li(class='sensor-' + sensor.value._id) #{time_ago_in_words(sensor.value.time)} | #{sensor.value.data} |
+- var old_sensor_id;
+table  
+  tr 
+    th Time Ago
+    th Humidity
+    th Temp(DHT22)
+    th Temp(DS1820)
+      each sensor in sensors
+        if(old_sensor_id != sensor.id)
+          tr
+        if(old_sensor_id != sensor.id)
+          td #{time_ago_in_words(sensor.value[2])}
+       
+        td | #{sensor.value[1]} |
+        - old_sensor_id = sensor.id;
+
+    
+

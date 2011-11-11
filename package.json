@@ -9,5 +9,11 @@
     , "date-utils": "latest"
     , "socket.io": "latest"
     , "forever": "latest"
+    , "stylus": ">= 0.13.4"
+    , "readability": "latest"
+    , "events": "latest"
+    , "request": "latest"
+    , "underscore": "latest"
+    
   }
 }

@@ -49,18 +49,23 @@ module.exports = function(req, res, next){
           
           sensor_room1: {
             map: function(doc) {
-                   var d=new Date();
-                   if(d.getDate() < 10){ var today_date = "0" + d.getDate()}
-                   else {var today_data = getDate()}
-
-                   str = d.getFullYear()+"_"+(d.getMonth()+1)+"_"+today_date+"@"+d.getHours();
-
-                   if(doc._id.search(str) != -1 && doc.name == 'room1' ) {
-                     emit(doc.time, doc);
+                   if(doc.sensors){
+                     for(var i=0;i<doc.sensors.length;i++){
+                       if(doc.sensors[i].name.search("room1") != -1){
+                             emit([doc.time,doc.sensors[i].data], [doc.sensors[i].address,doc.sensors[i].data,doc.time]);
+                       }
+                     }
                    }
-          }
+            }
+          },
+            
+          sensors_all: {
+            map: function(doc) {
+                   emit(doc.time, doc);
+                 }
+            }
            
-        }
+         
       }
     }
   , function(err){

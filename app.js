@@ -1,80 +1,75 @@
+(function() {
+  var SensorStream, app, config, couchDBMiddleware, cradle, date_helper, express, io, obj_helper, stream, view_helper, _;
 
-/**
- * Module dependencies.
- */
+  express = require('express');
 
-var express = require('express')
-   ,config = require(__dirname + '/config.js').config
-   ,couchDBMiddleware = require(__dirname + '/couchdb.js')
-   ,helpers = require(__dirname + '/helpers/date_helper.js')
-  // ,sio = require('../../lib/socket.io')
-   ,app = module.exports = express.createServer();
+  cradle = require('cradle');
 
-// Configuration
-/*
-app.configure('kalkov.dyndns.org', function(){
-    app.use(function(req, res, next){
-        
-        };
-        next();
+  config = require(__dirname + '/config.js').config;
+
+  couchDBMiddleware = require(__dirname + '/couchdb.js');
+
+  date_helper = require(__dirname + '/helpers/date_helper.js');
+
+  obj_helper = require(__dirname + '/helpers/obj_helper.js');
+
+  view_helper = require(__dirname + '/helpers/view_helper.js');
+
+  app = module.exports = express.createServer();
+
+  io = require('socket.io').listen(app);
+
+  _ = require('underscore');
+
+  SensorStream = require('./sensor_stream');
+
+  stream = new SensorStream();
+
+  stream.watch();
+
+  io.sockets.on('connection', function(socket) {
+    console.log('Connected ...');
+    socket.on('processed', function(data) {
+      console.log('Will Fire newDoc');
+      return socket.emit('newDoc', data);
     });
-});
-*/
-app.configure('development', function(){
-    app.use(express.errorHandler({ dumpExceptions: true, showStack: true })); 
-});
+    return socket.on('ok?', function(data) {
+      return console.log('Client JS received data');
+    });
+  });
 
-app.configure('production', function(){
-    app.use(express.errorHandler()); 
-});
-
-app.configure(function(){
+  app.configure(function() {
     app.set('views', __dirname + '/views');
     app.set('view engine', 'jade');
     app.use(express.bodyParser());
-    app.use(express.methodOverride());
     app.use(couchDBMiddleware());
+    app.use(express.methodOverride());
     app.use(app.router);
-
-    //app.use(express.static(__dirname + '/public'));
-});
-
-//Helpers
-app.helpers({
-  time_ago_in_words: helpers.time_ago_in_words
-});
-
-
-// Routes
-require('./routes')(app).listen(config.port);
-console.log("is_it_hot_ui is listening on port %d in %s mode", config.port, app.settings.env);
-
-/*
-var io = sio.listen(app)
-  , nicknames = {};
-
-io.sockets.on('connection', function (socket) {
-  socket.on('user message', function (msg) {
-    socket.broadcast.emit('user message', socket.nickname, msg);
+    app.use(express.static(__dirname + '/public'));
+    return app.use(express.errorHandler({
+      dumpExceptions: true,
+      showStack: true
+    }));
   });
 
-  socket.on('nickname', function (nick, fn) {
-    if (nicknames[nick]) {
-      fn(true);
-    } else {
-      fn(false);
-      nicknames[nick] = socket.nickname = nick;
-      socket.broadcast.emit('announcement', nick + ' connected');
-      io.sockets.emit('nicknames', nicknames);
-    }
+  app.helpers({
+    time_ago_in_words: date_helper.time_ago_in_words,
+    printObj: obj_helper.printObj,
+    get_order_of_sensors: view_helper.get_order_of_sensors
   });
 
-  socket.on('disconnect', function () {
-    if (!socket.nickname) return;
-
-    delete nicknames[socket.nickname];
-    socket.broadcast.emit('announcement', socket.nickname + ' disconnected');
-    socket.broadcast.emit('nicknames', nicknames);
+  app.get('/', function(req, res) {
+    return res.render('index', {
+      title: 'Archive'
+    });
   });
-});
-*/
+
+  app.get('/archive/:id', function(req, res) {
+    return db.get(req.params.id, function(err, doc) {});
+  });
+
+  require('./routes')(app).listen(config.port);
+
+  console.log("is_it_hot_ui is listening on port %d in %s mode", config.port, app.settings.env);
+
+}).call(this);

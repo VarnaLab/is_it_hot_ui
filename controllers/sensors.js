@@ -14,13 +14,7 @@ var renderDocsRaw = function(res, docs){
 }
 
 exports.index = function (req, res) {
-  var d=new Date();
-  if(d.getDate() < 10){ var today_date = "0" + d.getDate()}
-  else {var today_data = getDate()}
-
-  var minutes_str = d.getFullYear()+"_"+(d.getMonth()+1)+"_"+today_date+"@"+d.getHours()+":"+d.getMinutes();
-
-  req.db.view('sensors/sensors_last_minute',{descending: true}, function (err, docs) {	
+  req.db.view('sensors/sensors_all',{descending: true}, function (err, docs) {	
       res.render('sensors', { sensors: docs, title: "All sensors" });
   });
 };
@@ -29,7 +23,7 @@ exports.index = function (req, res) {
 exports.room1 = function (req, res) {
   var d=new Date();
   if(d.getDate() < 10){ var today_date = "0" + d.getDate()}
-  else {var today_data = getDate()}
+  else {var today_data = d.getDate()}
 
   var minutes_str = d.getFullYear()+"_"+(d.getMonth()+1)+"_"+today_date+"@"+d.getHours();
 
