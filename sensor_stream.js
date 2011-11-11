@@ -21,7 +21,7 @@
         cache: false,
         auth: {
           username: 'kalkov',
-          password: 'parola221'
+          password: 'parola'
         }
       }).database('sensors');
     }
